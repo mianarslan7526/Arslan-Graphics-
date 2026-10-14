@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#101113">
+  <title>Private dashboard — Arslan Graphics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <script src="assets/assets.js"></script>
+</head>
+<body>
+  <main class="auth-screen" id="auth-screen">
+    <div class="auth-card">
+      <a class="admin-brand" href="index.html"><span class="brand-mark">A<span>G</span></span><span><strong>Arslan Graphics</strong><small>PRIVATE STUDIO</small></span></a>
+      <p class="auth-kicker">OWNER ACCESS ONLY</p>
+      <h1>Welcome back.</h1>
+      <p class="auth-subtitle">Sign in to manage your projects and studio analytics.</p>
+      <form id="login-form">
+        <label for="login-email">Email address</label><input id="login-email" name="email" type="email" autocomplete="username" required placeholder="you@example.com">
+        <label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required placeholder="Your password">
+        <p class="auth-error" id="login-error" role="alert"></p>
+        <button type="submit" class="admin-button primary-button" id="login-button">Sign in <span>↗</span></button>
+      </form>
+      <p class="auth-footnote">Your dashboard is private. Sign-in is restricted to the configured admin account.</p>
+    </div>
+    <div class="auth-decoration" aria-hidden="true"><span>AG</span><i>✳</i></div>
+  </main>
+
+  <div class="dashboard" id="dashboard" hidden>
+    <aside class="sidebar" id="sidebar">
+      <a class="admin-brand" href="index.html"><span class="brand-mark">A<span>G</span></span><span><strong>Arslan Graphics</strong><small>STUDIO DASHBOARD</small></span></a>
+      <div class="sidebar-label">WORKSPACE</div>
+      <button class="side-link active" data-view="analytics" type="button"><span>◫</span> Analytics</button>
+      <button class="side-link" data-view="orders" type="button"><span>▤</span> View orders <b id="order-count-badge">0</b></button>
+      <div class="sidebar-bottom"><span class="online-dot"></span> Firebase connected<p>Private admin session</p></div>
+    </aside>
+    <div class="dashboard-main">
+      <header class="admin-topbar">
+        <button class="mobile-sidebar-toggle" id="mobile-sidebar-toggle" aria-label="Toggle navigation" type="button">☰</button>
+        <div><p class="topbar-kicker">ARS­LAN GRAPHICS / OVERVIEW</p><h1 id="page-heading">Analytics</h1></div>
+        <div class="topbar-actions">
+          <span class="today-label" id="today-label"></span>
+          <div class="menu-wrap"><button class="more-button" id="more-button" aria-label="Open dashboard menu" aria-expanded="false" type="button">⋮</button><div class="more-menu" id="more-menu" hidden><button type="button" data-view="analytics">◫ &nbsp; Analytics</button><button type="button" data-view="orders">▤ &nbsp; View Orders</button><hr><button id="sign-out-button" type="button">↪ &nbsp; Sign out</button></div></div>
+        </div>
+      </header>
+      <main class="admin-content">
+        <div class="admin-notice" id="admin-error" role="status" hidden></div>
+        <section class="admin-view active" id="analytics-view">
+          <div class="welcome-row"><div><p class="content-kicker">YOUR STUDIO AT A GLANCE</p><h2>Good work, made visible.</h2></div><span class="live-pill"><i></i> Live data</span></div>
+          <div class="metric-grid">
+            <article class="metric-card metric-featured"><div class="metric-top"><span>Total visitors</span><span class="metric-icon">◉</span></div><strong data-metric="visitors">0</strong><small>All time website visits</small><div class="metric-sparkline" aria-hidden="true">⌁</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Today’s visitors</span><span class="metric-icon">↗</span></div><strong data-metric="visitorsToday">0</strong><small>Unique sessions today</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Total orders</span><span class="metric-icon">▤</span></div><strong data-metric="orders">0</strong><small>All project requests</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Orders today</span><span class="metric-icon">＋</span></div><strong data-metric="ordersToday">0</strong><small>New requests received today</small></article>
+            <article class="metric-card metric-sales"><div class="metric-top"><span>Total sales</span><span class="metric-icon">Rs</span></div><strong data-metric="sales">Rs 0</strong><small>Excluding cancelled orders</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Sales today</span><span class="metric-icon">↗</span></div><strong data-metric="salesToday">Rs 0</strong><small>Non-cancelled orders today</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Pending orders</span><span class="metric-icon status-pending">●</span></div><strong data-metric="pending">0</strong><small>Waiting to be started</small></article>
+            <article class="metric-card"><div class="metric-top"><span>Completed orders</span><span class="metric-icon status-completed">●</span></div><strong data-metric="completed">0</strong><small>Projects delivered</small></article>
+          </div>
+          <section class="chart-panel"><div class="panel-heading"><div><p class="content-kicker">THE LAST 7 DAYS</p><h3>Visits &amp; sales</h3></div><div class="chart-legend"><span><i class="legend-visits"></i> Visits</span><span><i class="legend-sales"></i> Sales (Rs)</span></div></div><div class="chart-wrap"><canvas id="activity-chart" aria-label="Chart of visits and sales during the last seven days" role="img"></canvas></div><p class="chart-note">Bars show visits; the line shows order sales. Sales exclude cancelled orders.</p></section>
+        </section>
+        <section class="admin-view" id="orders-view">
+          <div class="orders-heading"><div><p class="content-kicker">YOUR CLIENT WORK</p><h2>Project requests<span class="heading-count" id="orders-heading-count">0</span></h2></div><button class="admin-button subtle-button" id="refresh-button" type="button">↻ <span>Refresh</span></button></div>
+          <div class="orders-toolbar"><label class="search-box"><span>⌕</span><input id="order-search" type="search" placeholder="Search name, email or order ID…" aria-label="Search orders"></label><select id="status-filter" aria-label="Filter by status"><option value="">All statuses</option><option>Pending</option><option>In Progress</option><option>Completed</option><option>Cancelled</option></select><select id="service-filter" aria-label="Filter by service"><option value="">All services</option></select><input id="date-filter" type="date" aria-label="Filter by order date"><button class="clear-filters" id="clear-filters" type="button">Clear</button></div>
+          <div class="orders-panel"><div class="table-scroll"><table class="orders-table"><thead><tr><th>ORDER</th><th>CLIENT</th><th>SERVICE</th><th>PRICE</th><th>MESSAGE</th><th>DATE</th><th>STATUS</th><th></th></tr></thead><tbody id="orders-list"></tbody></table></div><div class="empty-state" id="empty-orders" hidden><span>▤</span><h3>No orders found</h3><p>New project requests will appear here in real time.</p></div></div>
+          <p class="results-count" id="results-count"></p>
+        </section>
+      </main>
+    </div>
+  </div>
+  <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
+  <template id="order-row-template"><tr><td class="order-id-cell" data-label="ORDER"><strong></strong><small></small></td><td class="client-cell" data-label="CLIENT"><strong></strong><a></a><small class="customer-phone"></small><a class="client-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></td><td data-label="SERVICE"></td><td data-label="PRICE"></td><td class="message-cell" data-label="MESSAGE"></td><td data-label="DATE"></td><td data-label="STATUS"><select class="status-select" aria-label="Change order status"><option>Pending</option><option>In Progress</option><option>Completed</option><option>Cancelled</option></select></td><td data-label="ACTIONS"><button class="delete-order" type="button" aria-label="Delete order">×</button></td></tr></template>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-init.js"></script>
+  <script src="js/admin.js" defer></script>
+</body>
+</html>
