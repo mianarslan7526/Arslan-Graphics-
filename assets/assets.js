@@ -6,6 +6,7 @@ window.SITE_CONFIG = {
   faviconUrl: "https://i.ibb.co/fzMFhYw9/1000031050-removebg-preview.png",
   // Yahan hero section ki image ka direct image link paste karein.
   heroImageUrl: "https://i.ibb.co/TxvwxTjQ/file-0000000040708211aa32b59315e347da.png",
+  heroImageUrl2: "https://i.ibb.co/TxvwxTjQ/file-0000000040708211aa32b59315e347da.png",
   // Yahan About section ki image ka direct image link paste karein.
   aboutImageUrl: "",
 

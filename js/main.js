@@ -44,11 +44,54 @@
     const contactLink = whatsappLink("Hello Arslan Graphics, I want to know about your services.");
     document.getElementById("contact-whatsapp").href = contactLink;
     document.getElementById("whatsapp-float").href = contactLink;
-    if (config.heroImageUrl) {
+    const heroImageUrl = String(config.heroImageUrl || "").trim();
+    const heroImageUrl2 = String(config.heroImageUrl2 || "").trim();
+    if (heroImageUrl) {
       const frontCard = document.querySelector(".art-card-front");
-      const imageUrl = String(config.heroImageUrl).trim().replaceAll('"', "%22");
-      frontCard.style.backgroundImage = `url("${imageUrl}")`;
+      const heroImage = document.createElement("img");
+      heroImage.className = "hero-img";
+      heroImage.src = heroImageUrl;
+      heroImage.alt = `${config.brandName} featured design`;
+      heroImage.tabIndex = heroImageUrl2 ? 0 : -1;
+      if (heroImageUrl2) {
+        heroImage.setAttribute("role", "button");
+        heroImage.setAttribute("aria-label", "Show alternate hero image");
+      }
+      frontCard.prepend(heroImage);
       frontCard.classList.add("has-image");
+      if (heroImageUrl2) {
+        let showingSecond = false;
+        let swapping = false;
+        const swapImage = () => {
+          if (swapping) return;
+          const nextIsSecond = !showingSecond;
+          const nextUrl = nextIsSecond ? heroImageUrl2 : heroImageUrl;
+          const preload = new Image();
+          swapping = true;
+          preload.onload = () => {
+            heroImage.style.opacity = "0";
+            window.setTimeout(() => {
+              heroImage.src = nextUrl;
+              heroImage.alt = `${config.brandName} ${nextIsSecond ? "alternate" : "featured"} design`;
+              heroImage.setAttribute("aria-label", `Show ${nextIsSecond ? "featured" : "alternate"} hero image`);
+              showingSecond = nextIsSecond;
+              heroImage.style.opacity = "1";
+              swapping = false;
+            }, 180);
+          };
+          preload.onerror = () => {
+            console.error(`Could not load the alternate hero image: ${nextUrl}`);
+            swapping = false;
+          };
+          preload.src = nextUrl;
+        };
+        heroImage.addEventListener("click", swapImage);
+        heroImage.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          swapImage();
+        });
+      }
     }
     if (config.aboutImageUrl) {
       const photo = document.getElementById("about-photo");
