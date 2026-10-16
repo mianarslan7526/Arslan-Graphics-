@@ -30,18 +30,18 @@ window.SITE_CONFIG = {
     { name: "Behance", url: "", icon: "behance", iconUrl: "" }
   ],
 
-  // Firebase project ki web app values yahan paste karein.
+  // Configured Firebase web app values; apne project ko badlein to yahan update karein.
   firebase: {
-    apiKey: "",
-    authDomain: "",
-    databaseURL: "",
-    projectId: "",
-    storageBucket: "",
-    messagingSenderId: "",
-    appId: ""
+    apiKey: "AIzaSyCmgYtEZVMAQhJPX_xOMNJ7IYXgiNeoyxc",
+    authDomain: "arslan-graphic.firebaseapp.com",
+    databaseURL: "https://arslan-graphic-default-rtdb.firebaseio.com",
+    projectId: "arslan-graphic",
+    storageBucket: "arslan-graphic.firebasestorage.app",
+    messagingSenderId: "903467236205",
+    appId: "1:903467236205:web:295d57f231b043a11af864"
   },
   // Firebase console se admin user ka UID yahan paste karein.
-  adminUid: "",
+  adminUid: "KL99H8vtofOeHXi2LSLWB8msQm43",
 
   aboutTitle: "Design that makes your brand impossible to ignore.",
   aboutText: "I’m Arslan, a graphic designer helping ambitious businesses turn their ideas into clear, memorable visual identities. From the first sketch to the final files, every detail is made with purpose.",
@@ -55,28 +55,16 @@ window.SITE_CONFIG = {
   // Services add, edit, ya remove karne ke liye sirf is array ko update karein.
   services: [
     {
-      id: "branding",
-      title: "Branding",
-      shortDescription: "A confident identity system built to make your business memorable.",
-      fullDescription: "Build a brand people recognize and trust. Together we’ll shape a distinctive visual direction and a practical identity system that stays consistent wherever your business shows up.",
+      id: "brand-logo",
+      title: "Brand Logo",
+      shortDescription: "A memorable custom logo and polished visual identity for your business.",
+      fullDescription: "Build a brand people recognize and trust with a distinctive custom logo and a cohesive visual identity. The design is shaped around your story and includes the essential colours, typography, and final files to keep your brand consistent wherever it appears.",
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
       price: 8000,
       priceLabel: "Starting from Rs. 8,000",
       deliveryTime: "5–7 working days",
-      features: ["Logo and visual identity", "Colour palette and typography", "Social profile essentials", "Brand usage guide"]
-    },
-    {
-      id: "logo-design",
-      title: "Logo Design",
-      shortDescription: "A distinctive, versatile logo designed around your story.",
-      fullDescription: "Get a polished logo that works everywhere—from your storefront and social profiles to print. The process includes thoughtful concept development and refined final files ready for use.",
-      // Yahan service ki image ka direct image link paste karein.
-      imageUrl: "",
-      price: 3000,
-      priceLabel: "Starting from Rs. 3,000",
-      deliveryTime: "2–3 working days",
-      features: ["Custom original concepts", "Refinement and revisions", "Colour and monochrome versions", "High-resolution final files"]
+      features: ["Custom logo concepts", "Colour palette and typography", "Logo refinement and revisions", "Social profile essentials", "Brand usage guide", "High-resolution final files"]
     },
     {
       id: "packaging-design",
@@ -101,6 +89,18 @@ window.SITE_CONFIG = {
       priceLabel: "Starting from Rs. 1,500",
       deliveryTime: "1–2 working days",
       features: ["Front and back design", "Print-ready export", "Brand-matched typography", "Digital proof before delivery"]
+    },
+    {
+      id: "poster-design",
+      title: "Poster Design",
+      shortDescription: "Eye-catching poster artwork for your event, promotion, or brand.",
+      fullDescription: "Get a clear, attention-grabbing poster designed around your message and audience. The artwork is prepared for digital sharing or print, with a polished layout that makes the important details easy to notice.",
+      // Yahan service ki image ka direct image link paste karein.
+      imageUrl: "",
+      price: 2500,
+      priceLabel: "Starting from Rs. 2,500",
+      deliveryTime: "2–3 working days",
+      features: ["Custom poster layout", "Typography and visual hierarchy", "Social and print-ready export", "One revision round"]
     }
   ]
 };

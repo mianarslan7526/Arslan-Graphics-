@@ -25,11 +25,11 @@ A responsive, animated graphic-design portfolio and order-management dashboard b
 3. In **Build → Realtime Database**, create a database and choose the region closest to your customers. Copy its `databaseURL`.
 4. In **Build → Authentication → Sign-in method**, enable **Email/Password**.
 5. In **Authentication → Users**, create the owner's user with a strong password. Open that user and copy their **UID**.
-6. Paste the web app values into `firebase` in `assets/assets.js`; paste the owner's UID into `adminUid`. Do not put the owner's password in the source code.
+6. The web app values for the configured Arslan Graphic Firebase project are already filled into `firebase` in `assets/assets.js`. Paste the owner's UID into `adminUid`. Do not put the owner's password in the source code.
 7. In **Realtime Database → Rules**, replace `REPLACE_WITH_ADMIN_UID` below with the same admin UID, then publish the rules.
 8. Add the deployed GitHub Pages domain (and `localhost` for local development) under **Authentication → Settings → Authorized domains**.
 
-Firebase web-app configuration is public by design. The database rules below—not hidden configuration—protect customer order data. These rules allow unauthenticated visitors to create new `Pending` orders, permit only the configured owner to read/change/delete orders, and allow visit counters to increase by exactly one per database write. Realtime Database transactions need to read their current counter, so the aggregate analytics counters are publicly readable; they do not contain customer data. The session-storage check prevents ordinary refreshes from counting as new visits, but a public client can be deliberately manipulated. For abuse-resistant analytics, move counting to a trusted Cloud Function and/or enable Firebase App Check.
+Firebase web-app configuration is public by design. The database rules below—not hidden configuration—protect customer order data. These rules allow unauthenticated visitors to create new `Pending` orders, permit only the configured owner to read/change/delete orders, and allow visit counters to increase by exactly one per database write. Realtime Database transactions need to read their current counter, so the aggregate analytics counters are publicly readable; they do not contain customer data. Each load of a public page marked for visit tracking is counted, including page reloads and navigation between tracked pages. The admin dashboard listens to the counters and order data in realtime. Because counting runs in the public browser, it can be deliberately manipulated; for abuse-resistant analytics, move counting to a trusted Cloud Function and/or enable Firebase App Check.
 
 ```json
 {

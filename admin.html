@@ -10,12 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/admin.css">
-  <script src="assets/assets.js"></script>
+  <script src="assets/assets.js?v=20261015-firebase"></script>
 </head>
 <body>
   <main class="auth-screen" id="auth-screen">
     <div class="auth-card">
-      <a class="admin-brand" href="index.html"><span class="brand-mark">A<span>G</span></span><span><strong>Arslan Graphics</strong><small>PRIVATE STUDIO</small></span></a>
+      <a class="admin-brand" href="index.html"><img class="admin-brand-logo" src="https://i.ibb.co/fzMFhYw9/1000031050-removebg-preview.png" alt=""><span><strong>Arslan Graphics</strong><small>PRIVATE STUDIO</small></span></a>
       <p class="auth-kicker">OWNER ACCESS ONLY</p>
       <h1>Welcome back.</h1>
       <p class="auth-subtitle">Sign in to manage your projects and studio analytics.</p>
@@ -32,11 +32,11 @@
 
   <div class="dashboard" id="dashboard" hidden>
     <aside class="sidebar" id="sidebar">
-      <a class="admin-brand" href="index.html"><span class="brand-mark">A<span>G</span></span><span><strong>Arslan Graphics</strong><small>STUDIO DASHBOARD</small></span></a>
+      <a class="admin-brand" href="index.html"><img class="admin-brand-logo" src="https://i.ibb.co/fzMFhYw9/1000031050-removebg-preview.png" alt=""><span><strong>Arslan Graphics</strong><small>STUDIO DASHBOARD</small></span></a>
       <div class="sidebar-label">WORKSPACE</div>
       <button class="side-link active" data-view="analytics" type="button"><span>◫</span> Analytics</button>
       <button class="side-link" data-view="orders" type="button"><span>▤</span> View orders <b id="order-count-badge">0</b></button>
-      <div class="sidebar-bottom"><span class="online-dot"></span> Firebase connected<p>Private admin session</p></div>
+      <div class="sidebar-bottom"><span class="online-dot"></span> Secure connection<p>Private admin session</p></div>
     </aside>
     <div class="dashboard-main">
       <header class="admin-topbar">
@@ -52,8 +52,8 @@
         <section class="admin-view active" id="analytics-view">
           <div class="welcome-row"><div><p class="content-kicker">YOUR STUDIO AT A GLANCE</p><h2>Good work, made visible.</h2></div><span class="live-pill"><i></i> Live data</span></div>
           <div class="metric-grid">
-            <article class="metric-card metric-featured"><div class="metric-top"><span>Total visitors</span><span class="metric-icon">◉</span></div><strong data-metric="visitors">0</strong><small>All time website visits</small><div class="metric-sparkline" aria-hidden="true">⌁</div></article>
-            <article class="metric-card"><div class="metric-top"><span>Today’s visitors</span><span class="metric-icon">↗</span></div><strong data-metric="visitorsToday">0</strong><small>Unique sessions today</small></article>
+            <article class="metric-card metric-featured"><div class="metric-top"><span>Total visits</span><span class="metric-icon">◉</span></div><strong data-metric="visitors">0</strong><small>All-time website page visits</small><div class="metric-sparkline" aria-hidden="true">⌁</div></article>
+            <article class="metric-card"><div class="metric-top"><span>Today’s visits</span><span class="metric-icon">↗</span></div><strong data-metric="visitorsToday">0</strong><small>Page visits recorded today</small></article>
             <article class="metric-card"><div class="metric-top"><span>Total orders</span><span class="metric-icon">▤</span></div><strong data-metric="orders">0</strong><small>All project requests</small></article>
             <article class="metric-card"><div class="metric-top"><span>Orders today</span><span class="metric-icon">＋</span></div><strong data-metric="ordersToday">0</strong><small>New requests received today</small></article>
             <article class="metric-card metric-sales"><div class="metric-top"><span>Total sales</span><span class="metric-icon">Rs</span></div><strong data-metric="sales">Rs 0</strong><small>Excluding cancelled orders</small></article>

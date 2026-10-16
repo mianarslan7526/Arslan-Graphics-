@@ -19,12 +19,12 @@
 
   document.getElementById("today-label").textContent = new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date());
   if (!window.firebaseReady || !window.firebaseAuth || !window.firebaseDb) {
-    loginError.textContent = "Firebase is not configured. Add your Firebase web app settings in assets/assets.js.";
+    loginError.textContent = "Admin sign-in is unavailable. Please check the dashboard setup.";
     loginButton.disabled = true;
     return;
   }
   if (!config.adminUid) {
-    loginError.textContent = "Admin access is not configured. Add your Firebase admin user UID in assets/assets.js.";
+    loginError.textContent = "Admin access is not configured. Add the administrator account ID in assets/assets.js.";
     loginButton.disabled = true;
     return;
   }
@@ -47,8 +47,8 @@
   function authMessage(error) {
     if (error.code === "auth/invalid-credential" || error.code === "auth/wrong-password" || error.code === "auth/user-not-found") return "Email or password is incorrect.";
     if (error.code === "auth/too-many-requests") return "Too many sign-in attempts. Please wait and try again.";
-    if (error.code === "auth/unauthorized-domain") return "Add this website domain to the Firebase Authentication authorized domains.";
-    return "Sign-in failed. Check your connection and Firebase Authentication setup.";
+    if (error.code === "auth/unauthorized-domain") return "This website address is not enabled for sign-in.";
+    return "Sign-in failed. Check your connection and try again.";
   }
 
   window.firebaseAuth.onAuthStateChanged(async (user) => {
@@ -61,7 +61,7 @@
       return;
     }
     if (user.uid !== config.adminUid) {
-      loginError.textContent = "This Firebase account is not authorized to access the admin panel.";
+      loginError.textContent = "This account is not authorized to access the admin panel.";
       await window.firebaseAuth.signOut();
       return;
     }
@@ -81,7 +81,7 @@
 
   function listen(ref, event, callback) {
     ref.on(event, callback, (error) => {
-      console.error(`Firebase listener failed at ${ref.toString()}.`, error);
+      console.error(`Dashboard data listener failed at ${ref.toString()}.`, error);
       showNotice(`Could not load dashboard data: ${error.message}`);
     });
     databaseListeners.push({ ref, event, callback });

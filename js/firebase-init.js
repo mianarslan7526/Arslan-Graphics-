@@ -17,19 +17,12 @@
   window.firebaseAuth = typeof firebase.auth === "function" ? firebase.auth() : null;
 
   if (document.body.hasAttribute("data-track-visit")) {
-    try {
-      if (!sessionStorage.getItem("ag-visit-counted")) {
-        const dateKey = new Date().toISOString().slice(0, 10);
-        Promise.all([
-          window.firebaseDb.ref("analytics/totalVisits").transaction((value) => (Number(value) || 0) + 1),
-          window.firebaseDb.ref(`analytics/visitsByDate/${dateKey}`).transaction((value) => (Number(value) || 0) + 1)
-        ]).then((results) => {
-          if (results.some((result) => !result.committed)) throw new Error("A visitor-count transaction was not committed.");
-          sessionStorage.setItem("ag-visit-counted", "1");
-        }).catch((error) => console.error("Could not record this visit in Firebase analytics.", error));
-      }
-    } catch (error) {
-      console.error("Could not access session storage for visitor counting.", error);
-    }
+    const dateKey = new Date().toISOString().slice(0, 10);
+    Promise.all([
+      window.firebaseDb.ref("analytics/totalVisits").transaction((value) => (Number(value) || 0) + 1),
+      window.firebaseDb.ref(`analytics/visitsByDate/${dateKey}`).transaction((value) => (Number(value) || 0) + 1)
+    ]).then((results) => {
+      if (results.some((result) => !result.committed)) throw new Error("A visitor-count transaction was not committed.");
+    }).catch((error) => console.error("Could not record this visit in Firebase analytics.", error));
   }
 })();
