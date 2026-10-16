@@ -13,9 +13,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="assets/assets.js?v=20261015-firebase"></script>
-  <script src="js/main.js" defer></script>
+  <link rel="stylesheet" href="css/style.css?v=20261016-detail-image-ratio">
+  <script src="assets/assets.js?v=20261016-refresh-1249"></script>
+  <script src="js/main.js?v=20261016-refresh-1249" defer></script>
 </head>
 <body data-track-visit>
   <div class="intro" id="intro" aria-label="Welcome to Arslan Graphics">
@@ -35,6 +35,7 @@
         <span class="brand-mark" aria-hidden="true">A<span>G</span></span>
         <span class="brand-name">Arslan <b>Graphics</b></span>
       </a>
+      <button class="chat-bell" id="chat-bell" type="button" aria-label="Open messages" aria-controls="chat-dialog" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><b id="chat-unread-count" hidden>0</b></button>
       <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu" type="button">
         <span></span><span></span>
       </button>
@@ -59,7 +60,6 @@
           <p class="hero-lead reveal">Good design gets noticed. Great design gets remembered. Let’s make something people won’t scroll past.</p>
           <div class="hero-actions reveal">
             <a class="button button-primary" href="#services">Visit services <span aria-hidden="true">↗</span></a>
-            <a class="button button-quiet" href="#contact"><span class="play-icon" aria-hidden="true">↗</span> Start a conversation</a>
           </div>
         </div>
         <div class="hero-art reveal" aria-label="Abstract graphic design artwork">
@@ -76,13 +76,12 @@
         </div>
       </div>
       <a class="scroll-note" href="#services"><span></span> Scroll to explore</a>
-      <p class="hero-index" aria-hidden="true">01 — 04</p>
     </section>
 
     <section class="services-section section section-pad" id="services">
       <div class="shell">
         <div class="section-heading reveal">
-          <div><p class="eyebrow"><span class="eyebrow-dot"></span> What I can do for you</p><h2>Design for the<br><em>next big thing.</em></h2></div>
+          <div><p class="eyebrow section-label-services"><span class="eyebrow-dot"></span> Services</p><h2>Design for the<br><em>next big thing.</em></h2></div>
           <p class="section-intro">From first impression to final detail, the right design helps your business show up with confidence.</p>
         </div>
         <div class="services-grid" id="services-grid" aria-live="polite"></div>
@@ -92,6 +91,7 @@
 
     <section class="about-section section section-pad" id="about">
       <div class="shell about-grid">
+        <h2 class="about-heading reveal" id="about-title">About Me</h2>
         <div class="about-visual reveal">
           <div class="about-photo" id="about-photo" role="img" aria-label="Abstract portrait placeholder">
             <div class="portrait-art" aria-hidden="true"><span class="portrait-sun"></span><span class="portrait-shape"></span><span class="portrait-type">A<span>G</span></span><span class="portrait-caption">MADE WITH<br>INTENTION</span></div>
@@ -100,8 +100,6 @@
           <span class="about-side-label">INDEPENDENT DESIGNER · EST. 2020</span>
         </div>
         <div class="about-copy">
-          <p class="eyebrow reveal"><span class="eyebrow-dot"></span> A little about me</p>
-          <h2 class="reveal" id="about-title">Design that makes your brand impossible to ignore.</h2>
           <p class="about-description reveal" id="about-text"></p>
           <div class="skills-list reveal" id="skills-list"></div>
           <div class="stats-grid reveal" id="stats-grid"></div>
@@ -113,9 +111,25 @@
     <section class="contact-section section section-pad" id="contact">
       <div class="contact-shape" aria-hidden="true">✳</div>
       <div class="shell contact-inner">
-        <p class="eyebrow reveal"><span class="eyebrow-dot"></span> Have a good one in mind?</p>
+        <p class="eyebrow section-label-contact reveal"><span class="eyebrow-dot"></span> Contact Us</p>
         <h2 class="reveal">Let’s make<br><em>something matter.</em></h2>
         <p class="contact-lead reveal">Tell me what you’re building. I’ll bring the ideas, the detail, and a little bit of magic.</p>
+        <form class="contact-message-form reveal" id="contact-message-form" novalidate>
+          <div class="contact-message-fields">
+            <label>Your name<input name="name" type="text" autocomplete="name" maxlength="100" required placeholder="Full name"></label>
+            <label>Email<input name="email" type="email" autocomplete="email" maxlength="150" placeholder="you@example.com"></label>
+            <label>Phone / WhatsApp<input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+92 310 8201521"></label>
+            <label>Service
+              <select name="serviceId" id="contact-service" required></select>
+            </label>
+            <label class="contact-other-service" id="contact-other-service" hidden>What service do you need?
+              <input name="otherService" type="text" maxlength="100" placeholder="Describe the service">
+            </label>
+            <label class="contact-message-body">Your message<textarea name="message" rows="4" maxlength="2000" required placeholder="Tell us about your project or question"></textarea></label>
+          </div>
+          <p class="contact-form-feedback" id="contact-form-feedback" role="status" aria-live="polite"></p>
+          <button class="button button-primary contact-send-button" id="contact-send-button" type="submit">Send message <span aria-hidden="true">↗</span></button>
+        </form>
         <div class="contact-actions reveal">
           <a class="button button-primary" id="contact-email" href="mailto:mianarslan7526@gmail.com">Email Arslan <span aria-hidden="true">↗</span></a>
           <a class="button button-outline" id="contact-whatsapp" target="_blank" rel="noopener noreferrer">Chat on WhatsApp <span aria-hidden="true">↗</span></a>
@@ -138,8 +152,18 @@
   <a class="whatsapp-float" id="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with Arslan Graphics on WhatsApp">
     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.86 11.86 0 0 0 12.08 0C5.5 0 .15 5.35.15 11.93c0 2.1.55 4.15 1.6 5.95L.05 24l6.27-1.65a11.9 11.9 0 0 0 5.76 1.47h.01c6.58 0 11.93-5.35 11.93-11.93 0-3.19-1.24-6.19-3.5-8.41Zm-8.43 18.32a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.72.98.99-3.63-.24-.37a9.87 9.87 0 0 1-1.51-5.26c0-5.47 4.45-9.92 9.93-9.92a9.86 9.86 0 0 1 7.03 2.91 9.86 9.86 0 0 1 2.9 7.02c0 5.48-4.45 9.93-9.98 9.93Zm5.45-7.44c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.47-.89-.8-1.48-1.78-1.65-2.08-.17-.3-.02-.47.13-.62.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.08-.15-.68-1.63-.93-2.23-.24-.58-.49-.5-.68-.51h-.58c-.2 0-.53.08-.8.38-.27.3-1.05 1.03-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.13 3.25 5.17 4.56.72.31 1.28.49 1.71.63.72.23 1.37.2 1.89.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.17-1.43-.08-.12-.27-.2-.57-.35Z"/></svg>
   </a>
+  <dialog class="chat-dialog" id="chat-dialog" aria-labelledby="chat-dialog-title">
+    <section class="chat-panel">
+      <header class="chat-header"><div><p>PRIVATE CONVERSATION</p><h2 id="chat-dialog-title">Chat with Arslan Graphics</h2></div><button class="chat-close" id="chat-close" type="button" aria-label="Close chat">×</button></header>
+      <div class="chat-messages" id="chat-messages" aria-live="polite"></div>
+      <form class="chat-reply-form" id="chat-reply-form"><label class="visually-hidden" for="chat-reply-input">Your message</label><textarea id="chat-reply-input" name="message" rows="2" maxlength="2000" required placeholder="Write a message…"></textarea><button type="submit" aria-label="Send message">Send ↗</button></form>
+      <p class="chat-notice" id="chat-notice" role="status"></p>
+    </section>
+  </dialog>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-  <script src="js/firebase-init.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-init.js?v=20261016-chat-reply-v3"></script>
+  <script src="js/chat.js?v=20261016-chat-reply-v3" defer></script>
 </body>
 </html>

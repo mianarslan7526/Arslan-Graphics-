@@ -130,11 +130,18 @@
         img.src = service.imageUrl;
         img.alt = `${service.title} design sample`;
         img.loading = "lazy";
+        img.addEventListener("error", () => {
+          console.error(`Could not load the service image for ${service.title}: ${service.imageUrl}`);
+          image.classList.remove("has-image");
+          img.remove();
+        }, { once: true });
+        image.classList.add("has-image");
         image.append(img);
       }
       const body = document.createElement("div");
       body.className = "service-card-body";
-      body.innerHTML = `<span class="service-number">0${index + 1} / SERVICE</span><h3>${escapeHtml(service.title)}</h3><p>${escapeHtml(service.shortDescription)}</p><div class="service-card-footer"><span>${escapeHtml(service.priceLabel)}</span><span class="service-arrow">View details&nbsp; →</span></div>`;
+      const displayPrice = `Starting from Rs. ${new Intl.NumberFormat("en-PK").format(Number(service.price) || 0)}`;
+      body.innerHTML = `<span class="service-number">0${index + 1} / SERVICE</span><h3>${escapeHtml(service.title)}</h3><p>${escapeHtml(service.shortDescription)}</p><div class="service-card-footer"><span>${displayPrice}</span><span class="service-arrow">View details&nbsp; →</span></div>`;
       link.append(image, body);
       link.addEventListener("pointermove", (event) => {
         if (reducedMotion || event.pointerType !== "mouse") return;
@@ -343,6 +350,10 @@
 
   configureBrand();
   renderServices();
+  if (window.firebaseDb) {
+    window.addEventListener("site-services-updated", renderServices);
+    window.siteServicesReady.then(renderServices);
+  }
   renderAbout();
   renderSocials();
   observeReveals();

@@ -13,14 +13,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <script src="assets/assets.js?v=20261015-firebase"></script>
-  <script src="js/service.js" defer></script>
+  <link rel="stylesheet" href="css/style.css?v=20261016-imgbb-orders">
+  <script src="assets/assets.js?v=20261016-imgbb-orders"></script>
+  <script src="js/service.js?v=20261016-order-permission-feedback" defer></script>
 </head>
 <body class="service-page" data-track-visit>
   <header class="site-header is-scrolled">
     <nav class="nav shell" aria-label="Main navigation">
       <a class="brand" href="index.html" aria-label="Arslan Graphics home"><img class="brand-logo" data-logo alt="" hidden><span class="brand-mark" aria-hidden="true">A<span>G</span></span><span class="brand-name">Arslan <b>Graphics</b></span></a>
+      <button class="chat-bell" id="chat-bell" type="button" aria-label="Open messages" aria-controls="chat-dialog" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><b id="chat-unread-count" hidden>0</b></button>
       <button class="menu-toggle" id="menu-toggle" aria-expanded="false" aria-controls="nav-links" aria-label="Open navigation menu" type="button"><span></span><span></span></button>
       <div class="nav-links" id="nav-links">
         <a class="nav-link" href="index.html#home">Home</a><a class="nav-link" href="index.html#services">Services</a><a class="nav-link" href="index.html#about">About Me</a><a class="nav-link" href="index.html#contact">Contact Us</a><a class="nav-cta" href="#order">Let’s talk <span aria-hidden="true">↗</span></a>
@@ -49,12 +50,22 @@
     </section>
     <section class="order-section section section-pad" id="order">
       <div class="shell order-grid">
-        <div class="order-intro reveal"><p class="eyebrow"><span class="eyebrow-dot"></span> Your project starts here</p><h2>Let’s get<br><em>the ball rolling.</em></h2><p>Share a few details and I’ll get back to you as soon as possible. Prefer a quick chat? Message me directly on WhatsApp.</p><div class="order-assurance"><span>01</span><p><strong>Personal response</strong><br>Every enquiry is read by Arslan.</p></div><div class="order-assurance"><span>02</span><p><strong>No commitment</strong><br>Let’s talk through your idea first.</p></div></div>
+        <div class="order-intro reveal"><p class="eyebrow"><span class="eyebrow-dot"></span> Your project starts here</p><h2>Let’s get<br><em>make special.</em></h2><p>Share a few details and I’ll get back to you as soon as possible. Prefer a quick chat? Message me directly on WhatsApp.</p><div class="order-assurance"><span>01</span><p><strong>Personal response</strong><br>Every enquiry is read by Arslan.</p></div><div class="order-assurance"><span>02</span><p><strong>No commitment</strong><br>Let’s talk through your idea first.</p></div></div>
         <div class="order-panel reveal">
           <form id="order-form" novalidate>
             <div class="form-row"><label for="order-name">Full name <span>*</span></label><input id="order-name" name="name" autocomplete="name" required maxlength="100" placeholder="Your name"><small class="field-error" data-error="name"></small></div>
             <div class="form-row two-cols"><div><label for="order-phone">Phone / WhatsApp <span>*</span></label><input id="order-phone" name="phone" type="tel" autocomplete="tel" required maxlength="30" placeholder="+92 310 8201521"><small class="field-error" data-error="phone"></small></div><div><label for="order-email">Email <span>*</span></label><input id="order-email" name="email" type="email" autocomplete="email" required maxlength="150" placeholder="you@example.com"><small class="field-error" data-error="email"></small></div></div>
             <div class="form-row"><label for="order-service">Selected service <span>*</span></label><select id="order-service" name="serviceId" required></select><small class="field-error" data-error="serviceId"></small></div>
+            <div class="form-row">
+              <label for="order-sample-image">Sample image <span class="optional">(optional)</span></label>
+              <label class="sample-upload" id="sample-upload" for="order-sample-image">
+                <input id="order-sample-image" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+                <span class="sample-upload-prompt" id="sample-upload-prompt"><b aria-hidden="true">＋</b><strong>Choose an image or drop it here</strong><small>Image files up to 10 MB</small></span>
+                <img class="sample-upload-preview" id="sample-upload-preview" alt="Selected sample image preview" hidden>
+              </label>
+              <div class="sample-upload-controls"><small id="sample-upload-status" role="status">Optional · JPG, PNG, WebP, or GIF up to 10 MB.</small><button type="button" id="remove-sample-image" hidden>Remove image</button></div>
+              <small class="field-error" id="sample-image-error"></small>
+            </div>
             <div class="form-row"><label for="order-message">Tell me about your project <span>*</span></label><textarea id="order-message" name="message" rows="4" required maxlength="2000" placeholder="What are you looking to create?"></textarea><small class="field-error" data-error="message"></small></div>
             <div class="form-row"><label for="order-budget">Budget <span class="optional">(optional)</span></label><input id="order-budget" name="budget" type="number" min="0" max="100000000" placeholder="e.g. 5000"></div>
             <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
@@ -73,8 +84,11 @@
     <div class="shell footer-bottom"><span>© <span id="year"></span> Arslan Graphics. Made with intent.</span><a href="#">Back to top ↑</a></div>
   </footer>
   <a class="whatsapp-float" id="whatsapp-float" target="_blank" rel="noopener noreferrer" aria-label="Chat with Arslan Graphics on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.86 11.86 0 0 0 12.08 0C5.5 0 .15 5.35.15 11.93c0 2.1.55 4.15 1.6 5.95L.05 24l6.27-1.65a11.9 11.9 0 0 0 5.76 1.47h.01c6.58 0 11.93-5.35 11.93-11.93 0-3.19-1.24-6.19-3.5-8.41Zm-8.43 18.32a9.9 9.9 0 0 1-5.04-1.38l-.36-.21-3.72.98.99-3.63-.24-.37a9.87 9.87 0 0 1-1.51-5.26c0-5.47 4.45-9.92 9.93-9.92a9.86 9.86 0 0 1 7.03 2.91 9.86 9.86 0 0 1 2.9 7.02c0 5.48-4.45 9.93-9.98 9.93Zm5.45-7.44c-.3-.15-1.78-.88-2.06-.98-.28-.1-.48-.15-.68.15-.2.3-.78.98-.95 1.18-.18.2-.35.23-.65.08-.3-.15-1.26-.46-2.4-1.47-.89-.8-1.48-1.78-1.65-2.08-.17-.3-.02-.47.13-.62.13-.13.3-.35.45-.53.15-.18.2-.3.3-.5.1-.2.05-.38-.03-.53-.08-.15-.68-1.63-.93-2.23-.24-.58-.49-.5-.68-.51h-.58c-.2 0-.53.08-.8.38-.27.3-1.05 1.03-1.05 2.5s1.08 2.9 1.23 3.1c.15.2 2.13 3.25 5.17 4.56.72.31 1.28.49 1.71.63.72.23 1.37.2 1.89.12.58-.09 1.78-.73 2.03-1.43.25-.7.25-1.3.17-1.43-.08-.12-.27-.2-.57-.35Z"/></svg></a>
+  <dialog class="chat-dialog" id="chat-dialog" aria-labelledby="chat-dialog-title"><section class="chat-panel"><header class="chat-header"><div><p>PRIVATE CONVERSATION</p><h2 id="chat-dialog-title">Chat with Arslan Graphics</h2></div><button class="chat-close" id="chat-close" type="button" aria-label="Close chat">×</button></header><div class="chat-messages" id="chat-messages" aria-live="polite"></div><form class="chat-reply-form" id="chat-reply-form"><label class="visually-hidden" for="chat-reply-input">Your message</label><textarea id="chat-reply-input" name="message" rows="2" maxlength="2000" required placeholder="Write a message…"></textarea><button type="submit" aria-label="Send message">Send ↗</button></form><p class="chat-notice" id="chat-notice" role="status"></p></section></dialog>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-  <script src="js/firebase-init.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="js/firebase-init.js?v=20261016-chat-reply-v3"></script>
+  <script src="js/chat.js?v=20261016-chat-reply-v3" defer></script>
 </body>
 </html>

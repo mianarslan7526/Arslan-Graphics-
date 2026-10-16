@@ -9,8 +9,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/admin.css">
-  <script src="assets/assets.js?v=20261015-firebase"></script>
+  <link rel="stylesheet" href="css/admin.css?v=20261016-imgbb-order-image">
+  <script src="assets/assets.js?v=20261016-refresh-1249"></script>
 </head>
 <body>
   <main class="auth-screen" id="auth-screen">
@@ -36,6 +36,8 @@
       <div class="sidebar-label">WORKSPACE</div>
       <button class="side-link active" data-view="analytics" type="button"><span>◫</span> Analytics</button>
       <button class="side-link" data-view="orders" type="button"><span>▤</span> View orders <b id="order-count-badge">0</b></button>
+      <button class="side-link" data-view="messages" type="button"><span>✉</span> User messages <b id="message-count-badge">0</b></button>
+      <button class="side-link" data-view="services" type="button"><span>✳</span> Manage services</button>
       <div class="sidebar-bottom"><span class="online-dot"></span> Secure connection<p>Private admin session</p></div>
     </aside>
     <div class="dashboard-main">
@@ -44,7 +46,7 @@
         <div><p class="topbar-kicker">ARS­LAN GRAPHICS / OVERVIEW</p><h1 id="page-heading">Analytics</h1></div>
         <div class="topbar-actions">
           <span class="today-label" id="today-label"></span>
-          <div class="menu-wrap"><button class="more-button" id="more-button" aria-label="Open dashboard menu" aria-expanded="false" type="button">⋮</button><div class="more-menu" id="more-menu" hidden><button type="button" data-view="analytics">◫ &nbsp; Analytics</button><button type="button" data-view="orders">▤ &nbsp; View Orders</button><hr><button id="sign-out-button" type="button">↪ &nbsp; Sign out</button></div></div>
+          <div class="menu-wrap"><button class="more-button" id="more-button" aria-label="Open dashboard menu" aria-expanded="false" type="button">⋮</button><div class="more-menu" id="more-menu" hidden><button type="button" data-view="analytics">◫ &nbsp; Analytics</button><button type="button" data-view="orders">▤ &nbsp; View Orders</button><button type="button" data-view="messages">✉ &nbsp; User messages</button><button type="button" data-view="services">✳ &nbsp; Manage services</button><hr><button id="sign-out-button" type="button">↪ &nbsp; Sign out</button></div></div>
         </div>
       </header>
       <main class="admin-content">
@@ -69,15 +71,65 @@
           <div class="orders-panel"><div class="table-scroll"><table class="orders-table"><thead><tr><th>ORDER</th><th>CLIENT</th><th>SERVICE</th><th>PRICE</th><th>MESSAGE</th><th>DATE</th><th>STATUS</th><th></th></tr></thead><tbody id="orders-list"></tbody></table></div><div class="empty-state" id="empty-orders" hidden><span>▤</span><h3>No orders found</h3><p>New project requests will appear here in real time.</p></div></div>
           <p class="results-count" id="results-count"></p>
         </section>
+        <section class="admin-view" id="services-view">
+          <div class="orders-heading"><div><p class="content-kicker">YOUR PUBLIC WEBSITE</p><h2>Manage services</h2></div><button class="admin-button primary-button service-new-button" id="new-service-button" type="button">＋ <span>New service</span></button></div>
+          <p class="service-manager-note">Changes are saved to your website and appear for visitors in real time.</p>
+          <div class="service-manager-layout">
+            <div class="service-manager-list-panel">
+              <h3>Your services <span id="service-manager-count">0</span></h3>
+              <div id="service-manager-list" class="service-manager-list" aria-live="polite"></div>
+            </div>
+          </div>
+        </section>
+        <section class="admin-view" id="messages-view">
+          <div class="orders-heading"><div><p class="content-kicker">CLIENT CONVERSATIONS</p><h2>User messages<span class="heading-count" id="message-list-count">0</span></h2></div><span class="live-pill"><i></i> Live messages</span></div>
+          <p class="service-manager-note">Open a conversation to read messages, reply, control the visitor’s chat bell, or remove the conversation.</p>
+          <div id="visitor-message-list" class="visitor-message-list" aria-live="polite"></div>
+          <div id="empty-visitor-messages" class="empty-state" hidden><span>✉</span><h3>No messages yet</h3><p>Messages from the contact form will appear here.</p></div>
+        </section>
       </main>
     </div>
   </div>
+  <dialog class="admin-modal" id="service-dialog" aria-labelledby="service-form-heading">
+    <form id="service-form" class="service-editor">
+      <div class="service-editor-heading"><div><p class="content-kicker">SERVICE DETAILS</p><h3 id="service-form-heading">Add a service</h3></div><button class="modal-close" id="cancel-service-edit" type="button" aria-label="Close service editor">×</button></div>
+      <input type="hidden" name="serviceId">
+      <label>Service name<input name="title" type="text" maxlength="80" required placeholder="e.g. Brand Logo"></label>
+      <label>Image URL <span class="field-hint">(optional; direct image link)</span><input name="imageUrl" type="url" placeholder="https://example.com/design.jpg"></label>
+      <label>Short description<input name="shortDescription" type="text" maxlength="180" required placeholder="A short line shown on the home page"></label>
+      <label>Full description<textarea name="fullDescription" rows="4" maxlength="1500" required placeholder="Describe this service for its detail page"></textarea></label>
+      <div class="service-editor-row">
+        <label>Price (Rs)<input name="price" type="number" min="0" max="100000000" step="1" required placeholder="3000"></label>
+        <label>Delivery time<input name="deliveryTime" type="text" maxlength="80" required placeholder="3–5 working days"></label>
+      </div>
+      <label>Features <span class="field-hint">(one feature per line)</span><textarea name="features" rows="4" maxlength="1000" required placeholder="Custom design&#10;Print-ready files&#10;Two revisions"></textarea></label>
+      <p class="service-form-feedback" id="service-form-feedback" role="status"></p>
+      <div class="service-editor-actions"><button class="admin-button primary-button" id="save-service-button" type="submit">Save service</button></div>
+    </form>
+  </dialog>
+  <dialog class="admin-modal order-detail-modal" id="order-detail-dialog" aria-labelledby="order-detail-heading">
+    <div class="order-detail-content">
+      <div class="service-editor-heading"><div><p class="content-kicker">PROJECT REQUEST</p><h2 id="order-detail-heading">Order details</h2></div><button class="modal-close" id="close-order-details" type="button" aria-label="Close order details">×</button></div>
+      <div id="order-detail-body"></div>
+    </div>
+  </dialog>
+  <dialog class="admin-modal visitor-chat-admin-modal" id="visitor-chat-dialog" aria-labelledby="visitor-chat-heading">
+    <section class="visitor-chat-admin">
+      <header class="service-editor-heading"><div><p class="content-kicker">CLIENT CONVERSATION</p><h2 id="visitor-chat-heading">Conversation</h2></div><div class="conversation-header-actions"><span class="conversation-live"><i></i> Live chat</span><button class="modal-close" id="close-visitor-chat" type="button" aria-label="Close conversation">×</button></div></header>
+      <div class="visitor-profile" id="visitor-profile"></div>
+      <p class="conversation-hint">Messages update live. Reply below to continue the conversation.</p>
+      <div class="visitor-admin-messages" id="visitor-admin-messages" aria-live="polite"></div>
+      <form id="admin-chat-reply-form" class="chat-reply-form admin-chat-reply-form"><textarea id="admin-chat-reply-input" aria-label="Reply to visitor" rows="2" maxlength="2000" required placeholder="Write a reply…"></textarea><button type="submit" aria-label="Send reply"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4 20-7ZM22 2 11 13"/></svg></button></form>
+      <div class="visitor-chat-actions"><label class="notification-toggle"><input id="visitor-notification-toggle" type="checkbox"><span class="toggle-track"></span><span>Show chat bell for this visitor</span></label><button class="admin-button delete-service-button" id="delete-visitor-conversation" type="button">Delete conversation</button></div>
+      <p class="service-form-feedback" id="admin-chat-feedback" role="status"></p>
+    </section>
+  </dialog>
   <div class="toast-stack" id="toast-stack" aria-live="polite" aria-atomic="false"></div>
   <template id="order-row-template"><tr><td class="order-id-cell" data-label="ORDER"><strong></strong><small></small></td><td class="client-cell" data-label="CLIENT"><strong></strong><a></a><small class="customer-phone"></small><a class="client-whatsapp" target="_blank" rel="noopener noreferrer">WhatsApp ↗</a></td><td data-label="SERVICE"></td><td data-label="PRICE"></td><td class="message-cell" data-label="MESSAGE"></td><td data-label="DATE"></td><td data-label="STATUS"><select class="status-select" aria-label="Change order status"><option>Pending</option><option>In Progress</option><option>Completed</option><option>Cancelled</option></select></td><td data-label="ACTIONS"><button class="delete-order" type="button" aria-label="Delete order">×</button></td></tr></template>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-  <script src="js/firebase-init.js"></script>
-  <script src="js/admin.js" defer></script>
+  <script src="js/firebase-init.js?v=20261016-chat-reply-v3"></script>
+  <script src="js/admin.js?v=20261016-orders-permission-message" defer></script>
 </body>
 </html>

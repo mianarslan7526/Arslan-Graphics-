@@ -5,10 +5,10 @@ window.SITE_CONFIG = {
   // Yahan favicon ka direct image link paste karein.
   faviconUrl: "https://i.ibb.co/fzMFhYw9/1000031050-removebg-preview.png",
   // Yahan hero section ki image ka direct image link paste karein.
-  heroImageUrl: "https://i.ibb.co/TxvwxTjQ/file-0000000040708211aa32b59315e347da.png",
+  heroImageUrl: "https://i.ibb.co/gMpBWb96/IMG-20261016-WA0010.jpg",
   heroImageUrl2: "https://i.ibb.co/TxvwxTjQ/file-0000000040708211aa32b59315e347da.png",
   // Yahan About section ki image ka direct image link paste karein.
-  aboutImageUrl: "",
+  aboutImageUrl: "https://mp3tourl.com/images/1792128835758-eb085eca-6250-4556-9dab-3cb3d06020fe.png",
 
   contact: {
     email: "mianarslan7526@gmail.com",
@@ -40,10 +40,13 @@ window.SITE_CONFIG = {
     messagingSenderId: "903467236205",
     appId: "1:903467236205:web:295d57f231b043a11af864"
   },
-  // Firebase console se admin user ka UID yahan paste karein.
+
   adminUid: "KL99H8vtofOeHXi2LSLWB8msQm43",
 
-  aboutTitle: "Design that makes your brand impossible to ignore.",
+  // Public browser uploads expose this ImgBB key to visitors. Add your key here only if you accept that risk.
+  imgbbApiKey: "5619870e97a4591fec0f9c273ebfe6dd",
+
+  aboutTitle: "About Me",
   aboutText: "I’m Arslan, a graphic designer helping ambitious businesses turn their ideas into clear, memorable visual identities. From the first sketch to the final files, every detail is made with purpose.",
   stats: [
     { value: 5, suffix: "+", label: "Years of experience" },
@@ -52,7 +55,7 @@ window.SITE_CONFIG = {
   ],
   skills: ["Adobe Photoshop", "Adobe Illustrator", "Brand strategy", "Packaging"],
 
-  // Services add, edit, ya remove karne ke liye sirf is array ko update karein.
+  // Services ka default/fallback data. Normal updates admin panel ke Manage services section se karein.
   services: [
     {
       id: "brand-logo",
@@ -62,7 +65,6 @@ window.SITE_CONFIG = {
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
       price: 8000,
-      priceLabel: "Starting from Rs. 8,000",
       deliveryTime: "5–7 working days",
       features: ["Custom logo concepts", "Colour palette and typography", "Logo refinement and revisions", "Social profile essentials", "Brand usage guide", "High-resolution final files"]
     },
@@ -74,7 +76,6 @@ window.SITE_CONFIG = {
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
       price: 6000,
-      priceLabel: "Starting from Rs. 6,000",
       deliveryTime: "4–6 working days",
       features: ["Custom packaging layout", "Print-ready artwork", "Product-focused visual direction", "Mockup presentation"]
     },
@@ -86,7 +87,6 @@ window.SITE_CONFIG = {
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
       price: 1500,
-      priceLabel: "Starting from Rs. 1,500",
       deliveryTime: "1–2 working days",
       features: ["Front and back design", "Print-ready export", "Brand-matched typography", "Digital proof before delivery"]
     },
@@ -98,7 +98,6 @@ window.SITE_CONFIG = {
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
       price: 2500,
-      priceLabel: "Starting from Rs. 2,500",
       deliveryTime: "2–3 working days",
       features: ["Custom poster layout", "Typography and visual hierarchy", "Social and print-ready export", "One revision round"]
     }

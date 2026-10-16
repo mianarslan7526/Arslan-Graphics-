@@ -1,8 +1,9 @@
-(function () {
+(async function () {
   "use strict";
   const config = window.SITE_CONFIG;
+  if (window.siteServicesReady) await window.siteServicesReady;
   const params = new URLSearchParams(window.location.search);
-  const service = config.services.find((item) => item.id === params.get("id"));
+  let service = config.services.find((item) => item.id === params.get("id"));
   if (!service) {
     window.location.replace("index.html#services");
     return;
@@ -10,30 +11,56 @@
 
   const escapeHtml = (value) => String(value).replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[char]);
   const whatsapp = (message) => `https://wa.me/${encodeURIComponent(config.contact.whatsappNumber)}?text=${encodeURIComponent(message)}`;
-  document.title = `${service.title} — ${config.brandName}`;
-  document.querySelector('meta[name="description"]').content = `${service.shortDescription} View details and request ${service.title} from ${config.brandName}.`;
-  document.querySelector('meta[property="og:title"]').content = `${service.title} — ${config.brandName}`;
-  document.getElementById("service-title").textContent = service.title;
-  document.getElementById("service-description").textContent = service.fullDescription;
-  document.getElementById("service-price").textContent = service.priceLabel;
-  document.getElementById("service-delivery").textContent = service.deliveryTime;
   const detailArt = document.getElementById("detail-art");
-  if (service.imageUrl) {
-    const image = document.createElement("img");
-    image.src = service.imageUrl;
-    image.alt = `${service.title} design example`;
-    image.fetchPriority = "high";
-    detailArt.append(image);
-  } else {
-    detailArt.innerHTML = `<div class="detail-art-shape"><span>${escapeHtml(service.title.slice(0, 1))}</span><b>AG / 0${config.services.indexOf(service) + 1}</b></div>`;
-  }
   const featureList = document.getElementById("service-features");
-  service.features.forEach((feature) => {
-    const item = document.createElement("li");
-    item.textContent = feature;
-    featureList.append(item);
-  });
-
+  function updateServiceDetails() {
+    document.title = `${service.title} — ${config.brandName}`;
+    document.querySelector('meta[name="description"]').content = `${service.shortDescription} View details and request ${service.title} from ${config.brandName}.`;
+    document.querySelector('meta[property="og:title"]').content = `${service.title} — ${config.brandName}`;
+    document.getElementById("service-title").textContent = service.title;
+    document.getElementById("service-description").textContent = service.fullDescription;
+    const formattedPrice = new Intl.NumberFormat("en-PK").format(Number(service.price) || 0);
+    document.getElementById("service-price").textContent = `Starting from Rs. ${formattedPrice}`;
+    document.getElementById("service-delivery").textContent = service.deliveryTime || "";
+    detailArt.replaceChildren();
+    if (service.imageUrl) {
+      detailArt.classList.add("has-image");
+      const image = document.createElement("img");
+      image.src = service.imageUrl;
+      image.alt = `${service.title} design example`;
+      image.fetchPriority = "high";
+      image.addEventListener("error", () => {
+        console.error(`Could not load the service detail image for ${service.title}: ${service.imageUrl}`);
+        detailArt.classList.remove("has-image");
+        image.remove();
+        detailArt.innerHTML = `<div class="detail-art-shape"><span>${escapeHtml(service.title.slice(0, 1))}</span><b>AG / 0${config.services.indexOf(service) + 1}</b></div>`;
+      }, { once: true });
+      detailArt.append(image);
+    } else {
+      detailArt.classList.remove("has-image");
+      detailArt.innerHTML = `<div class="detail-art-shape"><span>${escapeHtml(service.title.slice(0, 1))}</span><b>AG / 0${config.services.indexOf(service) + 1}</b></div>`;
+    }
+    featureList.replaceChildren();
+    service.features.forEach((feature) => {
+      const item = document.createElement("li");
+      item.textContent = feature;
+      featureList.append(item);
+    });
+    const serviceSelect = document.getElementById("order-service");
+    if (serviceSelect) {
+      const selectedId = service.id;
+      serviceSelect.replaceChildren();
+      config.services.forEach((item) => {
+        const option = new Option(item.title, item.id, false, item.id === selectedId);
+        serviceSelect.add(option);
+      });
+    }
+    const greeting = `Hello, I want to order ${service.title}.`;
+    ["service-whatsapp", "order-whatsapp", "whatsapp-float"].forEach((id) => {
+      const link = document.getElementById(id);
+      if (link) link.href = whatsapp(id === "whatsapp-float" ? `Hello Arslan Graphics, I want to know about ${service.title}.` : greeting);
+    });
+  }
   document.querySelectorAll(".brand-name").forEach((brandName) => {
     brandName.innerHTML = `${escapeHtml(config.brandName.split(" ")[0])} <b>${escapeHtml(config.brandName.split(" ").slice(1).join(" "))}</b>`;
   });
@@ -72,19 +99,7 @@
     } else link.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${socialPaths[social.icon] || ""}</svg>`;
     document.getElementById("footer-social").append(link);
   });
-  const greeting = `Hello, I want to order ${service.title}.`;
-  ["service-whatsapp", "order-whatsapp", "whatsapp-float"].forEach((id) => {
-    document.getElementById(id).href = whatsapp(id === "whatsapp-float" ? `Hello Arslan Graphics, I want to know about ${service.title}.` : greeting);
-  });
-
-  const select = document.getElementById("order-service");
-  config.services.forEach((item) => {
-    const option = document.createElement("option");
-    option.value = item.id;
-    option.textContent = item.title;
-    option.selected = item.id === service.id;
-    select.append(option);
-  });
+  updateServiceDetails();
 
   const navMenu = document.getElementById("nav-links");
   const navToggle = document.getElementById("menu-toggle");
@@ -115,7 +130,79 @@
   const feedback = document.getElementById("form-feedback");
   const success = document.getElementById("order-success");
   const submit = document.getElementById("submit-order");
+  const sampleImageInput = document.getElementById("order-sample-image");
+  const sampleUpload = document.getElementById("sample-upload");
+  const sampleImagePreview = document.getElementById("sample-upload-preview");
+  const sampleImagePrompt = document.getElementById("sample-upload-prompt");
+  const sampleImageStatus = document.getElementById("sample-upload-status");
+  const sampleImageError = document.getElementById("sample-image-error");
+  const removeSampleImage = document.getElementById("remove-sample-image");
+  let sampleImageObjectUrl = "";
+  let selectedSampleImage = null;
   const fields = ["name", "phone", "email", "serviceId", "message"];
+  function setSampleImage(file) {
+    sampleImageError.textContent = "";
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
+      sampleImageError.textContent = "Choose a JPG, PNG, WebP, or GIF image.";
+      sampleImageInput.value = "";
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      sampleImageError.textContent = "Image must be 10 MB or smaller.";
+      sampleImageInput.value = "";
+      return;
+    }
+    if (sampleImageObjectUrl) URL.revokeObjectURL(sampleImageObjectUrl);
+    selectedSampleImage = file;
+    sampleImageObjectUrl = URL.createObjectURL(file);
+    sampleImagePreview.src = sampleImageObjectUrl;
+    sampleImagePreview.hidden = false;
+    sampleImagePrompt.hidden = true;
+    sampleUpload.classList.add("has-preview");
+    sampleImageStatus.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(1)} MB · ready to upload`;
+    removeSampleImage.hidden = false;
+  }
+  function clearSampleImage() {
+    selectedSampleImage = null;
+    sampleImageInput.value = "";
+    sampleImagePreview.removeAttribute("src");
+    sampleImagePreview.hidden = true;
+    sampleImagePrompt.hidden = false;
+    sampleUpload.classList.remove("has-preview", "is-dragging");
+    sampleImageStatus.textContent = "Optional · JPG, PNG, WebP, or GIF up to 10 MB.";
+    sampleImageError.textContent = "";
+    removeSampleImage.hidden = true;
+    if (sampleImageObjectUrl) URL.revokeObjectURL(sampleImageObjectUrl);
+    sampleImageObjectUrl = "";
+  }
+  sampleImageInput.addEventListener("change", () => setSampleImage(sampleImageInput.files[0]));
+  removeSampleImage.addEventListener("click", clearSampleImage);
+  ["dragenter", "dragover"].forEach((eventName) => sampleUpload.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    sampleUpload.classList.add("is-dragging");
+  }));
+  ["dragleave", "drop"].forEach((eventName) => sampleUpload.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    sampleUpload.classList.remove("is-dragging");
+  }));
+  sampleUpload.addEventListener("drop", (event) => setSampleImage(event.dataTransfer.files[0]));
+  async function uploadSampleImage(file) {
+    const apiKey = String(config.imgbbApiKey || "").trim();
+    if (!apiKey) throw new Error("ImgBB upload is not configured. Add your ImgBB API key in assets/assets.js.");
+    const payload = new FormData();
+    payload.append("key", apiKey);
+    payload.append("image", file, file.name);
+    sampleImageStatus.textContent = "Uploading sample image…";
+    const response = await fetch("https://api.imgbb.com/1/upload", { method: "POST", body: payload });
+    if (!response.ok) throw new Error(`ImgBB upload failed (HTTP ${response.status}).`);
+    const result = await response.json();
+    const imageUrl = result?.data?.display_url;
+    if (!result?.success || typeof imageUrl !== "string" || !imageUrl.startsWith("https://")) {
+      throw new Error(result?.error?.message || "ImgBB did not return a valid image link.");
+    }
+    return imageUrl;
+  }
   function setError(name, message) {
     const field = form.elements[name];
     const error = form.querySelector(`[data-error="${name}"]`);
@@ -140,6 +227,7 @@
   }
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    sampleImageError.textContent = "";
     const { valid, values } = validate();
     if (!valid) {
       form.querySelector('[aria-invalid="true"]')?.focus();
@@ -151,27 +239,30 @@
       return;
     }
     const selectedService = config.services.find((item) => item.id === values.serviceId);
-    const orderRef = window.firebaseDb.ref("orders").push();
-    const now = Date.now();
-    const order = {
-      orderId: orderRef.key,
-      name: values.name.trim(),
-      phone: values.phone.trim(),
-      email: values.email.trim(),
-      service: selectedService.title,
-      serviceId: selectedService.id,
-      price: Number(selectedService.price) || 0,
-      message: values.message.trim(),
-      status: "Pending",
-      createdAt: now,
-      dateKey: new Date(now).toISOString().slice(0, 10)
-    };
-    if (form.elements.budget.value) order.budget = Number(form.elements.budget.value);
     submit.disabled = true;
-    submit.textContent = "Sending request…";
+    submit.textContent = selectedSampleImage ? "Uploading sample…" : "Sending request…";
     feedback.textContent = "";
     feedback.classList.remove("is-error");
     try {
+      const sampleImageUrl = selectedSampleImage ? await uploadSampleImage(selectedSampleImage) : "";
+      if (selectedSampleImage) sampleImageStatus.textContent = "Sample uploaded. Saving your request…";
+      const orderRef = window.firebaseDb.ref("orders").push();
+      const now = Date.now();
+      const order = {
+        orderId: orderRef.key,
+        name: values.name.trim(),
+        phone: values.phone.trim(),
+        email: values.email.trim(),
+        service: selectedService.title,
+        serviceId: selectedService.id,
+        price: Number(selectedService.price) || 0,
+        message: values.message.trim(),
+        status: "Pending",
+        createdAt: now,
+        dateKey: new Date(now).toISOString().slice(0, 10)
+      };
+      if (form.elements.budget.value) order.budget = Number(form.elements.budget.value);
+      if (sampleImageUrl) order.sampleImageUrl = sampleImageUrl;
       await orderRef.set(order);
       document.getElementById("success-order-id").textContent = order.orderId;
       form.hidden = true;
@@ -179,10 +270,29 @@
       success.scrollIntoView({ behavior: "smooth", block: "center" });
     } catch (error) {
       console.error("Could not save the order to Firebase.", error);
-      feedback.textContent = "Your request could not be saved. Please try again or contact us on WhatsApp.";
+      if (selectedSampleImage && !config.imgbbApiKey) {
+        sampleImageError.textContent = "Add your ImgBB API key in assets/assets.js, or remove the sample image to send the request without it.";
+      } else if (selectedSampleImage && !error.message.includes("ImgBB upload failed")) {
+        sampleImageError.textContent = error.message;
+      } else if (selectedSampleImage) {
+        sampleImageError.textContent = `${error.message} Please try again or remove the sample image.`;
+      } else if (error.code === "PERMISSION_DENIED") {
+        feedback.textContent = "Firebase denied this order. Ask the site owner to publish the latest Realtime Database rules, then try again.";
+      } else {
+        feedback.textContent = "Your request could not be saved. Please try again or contact us on WhatsApp.";
+      }
       feedback.classList.add("is-error");
       submit.disabled = false;
       submit.innerHTML = 'Send project request <span aria-hidden="true">↗</span>';
     }
+  });
+  window.addEventListener("site-services-updated", () => {
+    const updatedService = config.services.find((item) => item.id === params.get("id"));
+    if (!updatedService) {
+      window.location.replace("index.html#services");
+      return;
+    }
+    service = updatedService;
+    updateServiceDetails();
   });
 })();
