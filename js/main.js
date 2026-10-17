@@ -101,9 +101,26 @@
     }
     if (config.aboutImageUrl) {
       const photo = document.getElementById("about-photo");
-      photo.style.backgroundImage = `url("${config.aboutImageUrl.replaceAll('"', "%22")}")`;
-      photo.classList.add("has-image");
-      photo.setAttribute("aria-label", `${config.brandName} designer portrait`);
+      const image = document.createElement("img");
+      image.alt = `${config.brandName} designer portrait`;
+      image.loading = "eager";
+      image.fetchPriority = "high";
+      image.decoding = "async";
+      image.addEventListener("load", () => {
+        photo.classList.add("has-image");
+        photo.setAttribute("aria-label", image.alt);
+      }, { once: true });
+      image.addEventListener("error", () => {
+        console.error(`Could not load the About image: ${config.aboutImageUrl}`);
+        image.remove();
+        photo.setAttribute("aria-label", "Abstract portrait placeholder");
+      }, { once: true });
+      image.src = config.aboutImageUrl;
+      photo.prepend(image);
+      if (image.complete && image.naturalWidth > 0) {
+        photo.classList.add("has-image");
+        photo.setAttribute("aria-label", image.alt);
+      }
     }
   }
 
@@ -140,8 +157,7 @@
       }
       const body = document.createElement("div");
       body.className = "service-card-body";
-      const displayPrice = `Starting from Rs. ${new Intl.NumberFormat("en-PK").format(Number(service.price) || 0)}`;
-      body.innerHTML = `<span class="service-number">0${index + 1} / SERVICE</span><h3>${escapeHtml(service.title)}</h3><p>${escapeHtml(service.shortDescription)}</p><div class="service-card-footer"><span>${displayPrice}</span><span class="service-arrow">View details&nbsp; →</span></div>`;
+      body.innerHTML = `<span class="service-number">0${index + 1} / SERVICE</span><h3>${escapeHtml(service.title)}</h3><p>${escapeHtml(service.shortDescription)}</p><div class="service-card-footer"><span class="service-arrow">View details&nbsp; →</span></div>`;
       link.append(image, body);
       link.addEventListener("pointermove", (event) => {
         if (reducedMotion || event.pointerType !== "mouse") return;

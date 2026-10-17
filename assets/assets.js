@@ -64,7 +64,6 @@ window.SITE_CONFIG = {
       fullDescription: "Build a brand people recognize and trust with a distinctive custom logo and a cohesive visual identity. The design is shaped around your story and includes the essential colours, typography, and final files to keep your brand consistent wherever it appears.",
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
-      price: 8000,
       deliveryTime: "5–7 working days",
       features: ["Custom logo concepts", "Colour palette and typography", "Logo refinement and revisions", "Social profile essentials", "Brand usage guide", "High-resolution final files"]
     },
@@ -75,7 +74,6 @@ window.SITE_CONFIG = {
       fullDescription: "Turn a great product into an experience customers remember. Packaging is designed around your product, audience, and print requirements so the final result looks as good in hand as it does on screen.",
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
-      price: 6000,
       deliveryTime: "4–6 working days",
       features: ["Custom packaging layout", "Print-ready artwork", "Product-focused visual direction", "Mockup presentation"]
     },
@@ -86,7 +84,6 @@ window.SITE_CONFIG = {
       fullDescription: "Make every introduction count with a clean, considered business card. You’ll receive a print-ready design that puts your contact details and brand identity in the right hands.",
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
-      price: 1500,
       deliveryTime: "1–2 working days",
       features: ["Front and back design", "Print-ready export", "Brand-matched typography", "Digital proof before delivery"]
     },
@@ -97,7 +94,6 @@ window.SITE_CONFIG = {
       fullDescription: "Get a clear, attention-grabbing poster designed around your message and audience. The artwork is prepared for digital sharing or print, with a polished layout that makes the important details easy to notice.",
       // Yahan service ki image ka direct image link paste karein.
       imageUrl: "",
-      price: 2500,
       deliveryTime: "2–3 working days",
       features: ["Custom poster layout", "Typography and visual hierarchy", "Social and print-ready export", "One revision round"]
     }

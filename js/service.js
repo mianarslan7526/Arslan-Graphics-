@@ -19,8 +19,6 @@
     document.querySelector('meta[property="og:title"]').content = `${service.title} — ${config.brandName}`;
     document.getElementById("service-title").textContent = service.title;
     document.getElementById("service-description").textContent = service.fullDescription;
-    const formattedPrice = new Intl.NumberFormat("en-PK").format(Number(service.price) || 0);
-    document.getElementById("service-price").textContent = `Starting from Rs. ${formattedPrice}`;
     document.getElementById("service-delivery").textContent = service.deliveryTime || "";
     detailArt.replaceChildren();
     if (service.imageUrl) {
@@ -255,7 +253,6 @@
         email: values.email.trim(),
         service: selectedService.title,
         serviceId: selectedService.id,
-        price: Number(selectedService.price) || 0,
         message: values.message.trim(),
         status: "Pending",
         createdAt: now,

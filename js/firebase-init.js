@@ -65,13 +65,16 @@
         const value = snapshot.val();
         const services = Object.entries(value)
           .filter(([, service]) => service && typeof service === "object" && typeof service.title === "string")
-          .map(([id, service], index) => ({
-            ...service,
-            id,
-            price: Number(service.price) || 0,
-            features: Array.isArray(service.features) ? service.features.filter((feature) => typeof feature === "string") : [],
-            displayOrder: Number.isFinite(Number(service.displayOrder)) ? Number(service.displayOrder) : index
-          }))
+          .map(([id, service], index) => {
+            const serviceDetails = { ...service };
+            delete serviceDetails.price;
+            return {
+              ...serviceDetails,
+              id,
+              features: Array.isArray(service.features) ? service.features.filter((feature) => typeof feature === "string") : [],
+              displayOrder: Number.isFinite(Number(service.displayOrder)) ? Number(service.displayOrder) : index
+            };
+          })
           .sort((first, second) => first.displayOrder - second.displayOrder);
         window.SITE_CONFIG.services = services;
         window.dispatchEvent(new CustomEvent("site-services-updated", { detail: services }));

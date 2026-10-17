@@ -90,6 +90,8 @@ img { display: block; max-width: 100%; }
 .button:hover { transform: translateY(-3px); }
 .button-primary { color: #2b1c08; background: var(--gold-gradient); box-shadow: inset 0 1px 0 rgba(255,255,255,.62), inset 0 -2px 0 rgba(98,62,8,.3), 0 8px 26px rgba(207,158,54,.28); }
 .button-primary:hover { background: var(--gold-gradient-hover); box-shadow: inset 0 1px 0 rgba(255,255,255,.72), inset 0 -2px 0 rgba(98,62,8,.24), 0 12px 32px rgba(207,158,54,.4); }
+.hero-actions .button-primary { background-image: var(--gold-gradient); }
+.hero-actions .button-primary:hover { background-image: var(--gold-gradient-hover); }
 .button-quiet { color: #d1cbc3; }
 .button-quiet:hover { color: var(--ink); }
 .button-quiet > span, .button-primary > span, .button-outline > span { color: var(--yellow); }
@@ -178,6 +180,7 @@ img { display: block; max-width: 100%; }
 .about-heading { grid-column: 1 / -1; margin: 0; font-size: clamp(39px, 4.2vw, 55px); }
 .about-visual { position: relative; width: 100%; max-width: 480px; }
 .about-photo { position: relative; height: 490px; overflow: hidden; border: 1px solid var(--line); background: #28231e; }
+.about-photo > img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .portrait-art { position: absolute; inset: 0; overflow: hidden; background: radial-gradient(ellipse at 30% 25%, #d2a43b 0, transparent 33%), linear-gradient(145deg,#362b29,#141513 70%); }
 .portrait-sun { position: absolute; top: 10%; right: 12%; width: 160px; height: 160px; border-radius: 50%; background: var(--yellow); }
 .portrait-shape { position: absolute; right: 10%; bottom: -20%; left: 13%; height: 75%; border-radius: 48% 48% 0 0; background: linear-gradient(140deg,#29463e,#101915); transform: rotate(-8deg); }

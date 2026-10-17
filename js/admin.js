@@ -140,13 +140,16 @@
       servicesInitialized = true;
       services = Object.entries(snapshot.val())
         .filter(([, service]) => service && typeof service === "object" && typeof service.title === "string")
-        .map(([id, service], index) => ({
-          ...service,
-          id,
-          price: Number(service.price) || 0,
-          features: Array.isArray(service.features) ? service.features.filter((feature) => typeof feature === "string") : [],
-          displayOrder: Number.isFinite(Number(service.displayOrder)) ? Number(service.displayOrder) : index
-        }))
+        .map(([id, service], index) => {
+          const serviceDetails = { ...service };
+          delete serviceDetails.price;
+          return {
+            ...serviceDetails,
+            id,
+            features: Array.isArray(service.features) ? service.features.filter((feature) => typeof feature === "string") : [],
+            displayOrder: Number.isFinite(Number(service.displayOrder)) ? Number(service.displayOrder) : index
+          };
+        })
         .sort((first, second) => first.displayOrder - second.displayOrder);
       config.services = services;
       renderServiceManager();
@@ -229,7 +232,7 @@
       const title = document.createElement("strong");
       title.textContent = service.title;
       const summary = document.createElement("span");
-      summary.textContent = `Starting from ${money(service.price)} · ${service.deliveryTime || "Delivery time not set"}`;
+      summary.textContent = service.deliveryTime || "Delivery time not set";
       details.append(title, summary);
       const actions = document.createElement("div");
       actions.className = "managed-service-actions";
@@ -363,7 +366,6 @@
     form.elements.imageUrl.value = service?.imageUrl || "";
     form.elements.shortDescription.value = service?.shortDescription || "";
     form.elements.fullDescription.value = service?.fullDescription || "";
-    form.elements.price.value = service ? Number(service.price) || 0 : "";
     form.elements.deliveryTime.value = service?.deliveryTime || "";
     form.elements.features.value = service?.features?.join("\n") || "";
     document.getElementById("service-form-heading").textContent = service ? "Edit service" : "Add a service";
@@ -389,7 +391,6 @@
     const entries = [
       ["Client", order.name || "—"],
       ["Service", order.service || "—"],
-      ["Price", money(order.price)],
       ["Order ID", order.orderId],
       ["Date received", date]
     ];
@@ -517,13 +518,8 @@
     setMetric("visitors", totalVisitors);
     setMetric("visitorsToday", todayVisitors);
     const todayOrders = orders.filter((order) => order.dateKey === todayKey);
-    const activeOrders = orders.filter((order) => order.status !== "Cancelled");
-    const sales = activeOrders.reduce((sum, order) => sum + (Number(order.price) || 0), 0);
-    const salesToday = todayOrders.filter((order) => order.status !== "Cancelled").reduce((sum, order) => sum + (Number(order.price) || 0), 0);
     setMetric("orders", orders.length);
     setMetric("ordersToday", todayOrders.length);
-    setMetric("sales", money(sales));
-    setMetric("salesToday", money(salesToday));
     setMetric("pending", orders.filter((order) => order.status === "Pending").length);
     setMetric("completed", orders.filter((order) => order.status === "Completed").length);
     document.getElementById("order-count-badge").textContent = orders.filter((order) => order.status === "Pending").length;
@@ -578,10 +574,9 @@
       const phone = String(order.phone || "").replace(/[^\d]/g, "");
       whatsapp.href = phone ? `https://wa.me/${encodeURIComponent(phone)}?text=${encodeURIComponent(`Hello ${order.name || ""}, I'm following up on your ${order.service || "design"} enquiry.`)}` : "#";
       cells[2].textContent = order.service || "—";
-      cells[3].textContent = money(order.price);
-      cells[4].textContent = order.message || "—";
+      cells[3].textContent = order.message || "—";
       const date = new Date(Number(order.createdAt) || 0);
-      cells[5].textContent = Number(order.createdAt) ? new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(date) : "—";
+      cells[4].textContent = Number(order.createdAt) ? new Intl.DateTimeFormat("en", { dateStyle: "medium", timeStyle: "short" }).format(date) : "—";
       const select = row.querySelector(".status-select");
       select.value = ["Pending", "In Progress", "Completed", "Cancelled"].includes(order.status) ? order.status : "Pending";
       setStatusClass(select);
@@ -654,9 +649,7 @@
       return date.toISOString().slice(0, 10);
     });
     const visits = dates.map((date) => Number(visitsByDate[date]) || 0);
-    const sales = dates.map((date) => orders.filter((order) => order.dateKey === date && order.status !== "Cancelled").reduce((sum, order) => sum + (Number(order.price) || 0), 0));
     const maxVisits = Math.max(...visits, 1);
-    const maxSales = Math.max(...sales, 1);
     ctx.clearRect(0, 0, width, height);
     ctx.font = "9px DM Sans, sans-serif";
     ctx.textBaseline = "middle";
@@ -677,7 +670,6 @@
     visitGradient.addColorStop(0, "#fff0a6");
     visitGradient.addColorStop(.45, "#d2a43b");
     visitGradient.addColorStop(1, "#8e6418");
-    const points = [];
     dates.forEach((date, index) => {
       const center = pad.left + step * (index + .5);
       const barH = (visits[index] / maxVisits) * chartH;
@@ -685,23 +677,9 @@
       ctx.beginPath();
       ctx.roundRect(center - barW / 2, pad.top + chartH - barH, barW, Math.max(2, barH), 3);
       ctx.fill();
-      const x = center;
-      const y = pad.top + chartH - (sales[index] / maxSales) * chartH;
-      points.push({ x, y });
       ctx.fillStyle = "#85878d";
       ctx.textAlign = "center";
-      ctx.fillText(new Intl.DateTimeFormat("en", { weekday: "short" }).format(new Date(`${date}T12:00:00`)), x, height - 10);
-    });
-    ctx.beginPath();
-    points.forEach(({ x, y }, index) => index ? ctx.lineTo(x, y) : ctx.moveTo(x, y));
-    ctx.strokeStyle = "#64cc98";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    points.forEach(({ x, y }) => {
-      ctx.beginPath();
-      ctx.arc(x, y, 3, 0, Math.PI * 2);
-      ctx.fillStyle = "#64cc98";
-      ctx.fill();
+      ctx.fillText(new Intl.DateTimeFormat("en", { weekday: "short" }).format(new Date(`${date}T12:00:00`)), center, height - 10);
     });
   }
 
@@ -816,7 +794,6 @@
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-|-$/g, "");
     const imageUrl = String(formData.get("imageUrl") || "").trim();
-    const price = Number(formData.get("price"));
     const features = String(formData.get("features") || "").split(/\r?\n/).map((feature) => feature.trim()).filter(Boolean);
     const existing = services.find((service) => service.id === id);
     let imageUrlIsValid = !imageUrl;
@@ -830,7 +807,6 @@
     if (!title || !id || !String(formData.get("shortDescription") || "").trim()
       || !String(formData.get("fullDescription") || "").trim()
       || !String(formData.get("deliveryTime") || "").trim()
-      || !Number.isFinite(price) || price < 0 || price > 100000000
       || !features.length || !imageUrlIsValid
       || (!editingId && services.some((service) => service.id === id))) {
       feedback.textContent = !imageUrlIsValid
@@ -846,7 +822,6 @@
       imageUrl,
       shortDescription: String(formData.get("shortDescription")).trim(),
       fullDescription: String(formData.get("fullDescription")).trim(),
-      price,
       deliveryTime: String(formData.get("deliveryTime")).trim(),
       features,
       displayOrder: existing?.displayOrder ?? services.length
