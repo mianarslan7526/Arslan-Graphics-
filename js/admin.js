@@ -673,11 +673,15 @@
     }
     const step = chartW / dates.length;
     const barW = Math.min(23, step * .42);
+    const visitGradient = ctx.createLinearGradient(0, pad.top, 0, pad.top + chartH);
+    visitGradient.addColorStop(0, "#fff0a6");
+    visitGradient.addColorStop(.45, "#d2a43b");
+    visitGradient.addColorStop(1, "#8e6418");
     const points = [];
     dates.forEach((date, index) => {
       const center = pad.left + step * (index + .5);
       const barH = (visits[index] / maxVisits) * chartH;
-      ctx.fillStyle = "rgba(242,120,86,.78)";
+      ctx.fillStyle = visitGradient;
       ctx.beginPath();
       ctx.roundRect(center - barW / 2, pad.top + chartH - barH, barW, Math.max(2, barH), 3);
       ctx.fill();
