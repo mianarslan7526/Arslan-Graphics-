@@ -1,5 +1,5 @@
 window.SITE_CONFIG = {
-  brandName: "Arslan Graphics",
+  brandName: "ᏗᏒᏕᏝᏗᏁ ᎶᏒᏗᎮᏂᎥፈᏕ",
   // Yahan apne logo ka direct image link paste karein.
   logoUrl: "https://i.ibb.co/fzMFhYw9/1000031050-removebg-preview.png",
   // Yahan favicon ka direct image link paste karein.
