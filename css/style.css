@@ -212,6 +212,12 @@ img { display: block; max-width: 100%; }
 .contact-message-fields input:focus, .contact-message-fields select:focus, .contact-message-fields textarea:focus { border-color: var(--gold); }
 .contact-message-fields select { color-scheme: dark; }
 .contact-message-body { grid-column: 1 / -1; }
+.contact-sample-field { grid-column: 1 / -1; width: 100%; justify-self: stretch; text-align: center; }
+.contact-sample-field > label:first-child { display: block; margin-bottom: 7px; text-align: left; }
+.contact-sample-field .sample-upload { justify-self: center; margin-right: auto; margin-left: auto; }
+.contact-sample-field .sample-upload-controls { flex-direction: column; justify-content: center; margin-right: auto; margin-left: auto; text-align: center; }
+.contact-sample-field .sample-upload-controls > small { text-align: center; }
+.contact-sample-field > .field-error { text-align: center; }
 .contact-other-service[hidden] { display: none; }
 .contact-form-feedback { min-height: 0; margin: 0; color: var(--green); font-size: 11px; }
 .contact-form-feedback:not(:empty) { margin: 10px 0; }

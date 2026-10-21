@@ -13,7 +13,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css?v=20261017-static-gold-button">
+  <link rel="stylesheet" href="css/style.css?v=20261021-centered-contact-upload">
   <script src="assets/assets.js?v=20261017-no-service-prices"></script>
   <script src="js/main.js?v=20261017-about-image-diagonal-motion" defer></script>
 </head>
@@ -125,10 +125,20 @@
             <label class="contact-other-service" id="contact-other-service" hidden>What service do you need?
               <input name="otherService" type="text" maxlength="100" placeholder="Describe the service">
             </label>
+            <div class="form-row contact-sample-field">
+              <label for="contact-sample-image">Sample image <span class="optional">(optional)</span></label>
+              <label class="sample-upload" id="contact-sample-upload" for="contact-sample-image">
+                <input id="contact-sample-image" type="file" accept="image/jpeg,image/png,image/webp,image/gif">
+                <span class="sample-upload-prompt" id="contact-sample-upload-prompt"><b aria-hidden="true">＋</b><strong>Choose an image or drop it here</strong><small>Image files up to 10 MB</small></span>
+                <img class="sample-upload-preview" id="contact-sample-upload-preview" alt="Selected sample image preview" hidden>
+              </label>
+              <div class="sample-upload-controls"><small id="contact-sample-upload-status" role="status">Optional · JPG, PNG, WebP, or GIF up to 10 MB.</small><button type="button" id="contact-remove-sample-image" hidden>Remove image</button></div>
+              <small class="field-error" id="contact-sample-image-error"></small>
+            </div>
             <label class="contact-message-body">Your message<textarea name="message" rows="4" maxlength="2000" required placeholder="Tell us about your project or question"></textarea></label>
           </div>
           <p class="contact-form-feedback" id="contact-form-feedback" role="status" aria-live="polite"></p>
-          <button class="button button-primary contact-send-button" id="contact-send-button" type="submit">Send message <span aria-hidden="true">↗</span></button>
+          <button class="button button-primary contact-send-button" id="contact-send-button" type="submit">Order this service <span aria-hidden="true">↗</span></button>
         </form>
         <div class="contact-actions reveal">
           <a class="button button-primary" id="contact-email" href="mailto:mianarslan7526@gmail.com">Email Arslan <span aria-hidden="true">↗</span></a>
@@ -164,6 +174,6 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="js/firebase-init.js?v=20261017-no-service-prices"></script>
-  <script src="js/chat.js?v=20261016-chat-reply-v3" defer></script>
+  <script src="js/chat.js?v=20261021-contact-sample-v1" defer></script>
 </body>
 </html>

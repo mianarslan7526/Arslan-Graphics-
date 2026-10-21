@@ -16,9 +16,18 @@
 
   const serviceSelect = document.getElementById("contact-service");
   const otherServiceRow = document.getElementById("contact-other-service");
+  const sampleImageInput = document.getElementById("contact-sample-image");
+  const sampleUpload = document.getElementById("contact-sample-upload");
+  const sampleUploadPrompt = document.getElementById("contact-sample-upload-prompt");
+  const sampleImagePreview = document.getElementById("contact-sample-upload-preview");
+  const sampleImageStatus = document.getElementById("contact-sample-upload-status");
+  const removeSampleImage = document.getElementById("contact-remove-sample-image");
+  const sampleImageError = document.getElementById("contact-sample-image-error");
   let visitor = null;
   let thread = null;
   let isSending = false;
+  let selectedSampleImage = null;
+  let sampleImageObjectUrl = "";
 
   function populateServices() {
     if (!serviceSelect) return;
@@ -39,6 +48,69 @@
     otherInput.required = isOther;
     if (!isOther) otherInput.value = "";
   });
+
+  function setSampleImage(file) {
+    sampleImageError.textContent = "";
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      sampleImageError.textContent = "Please choose an image file.";
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      sampleImageError.textContent = "Image must be 10 MB or smaller.";
+      return;
+    }
+    if (sampleImageObjectUrl) URL.revokeObjectURL(sampleImageObjectUrl);
+    selectedSampleImage = file;
+    sampleImageObjectUrl = URL.createObjectURL(file);
+    sampleImagePreview.src = sampleImageObjectUrl;
+    sampleImagePreview.hidden = false;
+    sampleUploadPrompt.hidden = true;
+    removeSampleImage.hidden = false;
+    sampleImageStatus.textContent = `${file.name} · ${(file.size / 1024 / 1024).toFixed(1)} MB · ready to upload`;
+  }
+
+  function clearSampleImage() {
+    if (sampleImageObjectUrl) URL.revokeObjectURL(sampleImageObjectUrl);
+    sampleImageObjectUrl = "";
+    selectedSampleImage = null;
+    sampleImageInput.value = "";
+    sampleImagePreview.hidden = true;
+    sampleImagePreview.removeAttribute("src");
+    sampleUploadPrompt.hidden = false;
+    removeSampleImage.hidden = true;
+    sampleImageStatus.textContent = "Optional · JPG, PNG, WebP, or GIF up to 10 MB.";
+    sampleImageError.textContent = "";
+  }
+
+  async function uploadSampleImage(file) {
+    const apiKey = String(config.imgbbApiKey || "").trim();
+    if (!apiKey) throw new Error("Sample image upload is not configured. Please remove the image or contact us by WhatsApp.");
+    const payload = new FormData();
+    payload.append("key", apiKey);
+    payload.append("image", file, file.name);
+    sampleImageStatus.textContent = "Uploading sample image…";
+    const response = await fetch("https://api.imgbb.com/1/upload", { method: "POST", body: payload });
+    if (!response.ok) throw new Error(`Sample image upload failed (HTTP ${response.status}).`);
+    const result = await response.json();
+    const imageUrl = result?.data?.display_url;
+    if (!result?.success || typeof imageUrl !== "string" || !imageUrl.startsWith("https://")) {
+      throw new Error(result?.error?.message || "Sample image upload did not return a valid link.");
+    }
+    return imageUrl;
+  }
+
+  sampleImageInput?.addEventListener("change", () => setSampleImage(sampleImageInput.files[0]));
+  removeSampleImage?.addEventListener("click", clearSampleImage);
+  ["dragenter", "dragover"].forEach((eventName) => sampleUpload?.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    sampleUpload.classList.add("is-dragging");
+  }));
+  ["dragleave", "drop"].forEach((eventName) => sampleUpload?.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    sampleUpload.classList.remove("is-dragging");
+  }));
+  sampleUpload?.addEventListener("drop", (event) => setSampleImage(event.dataTransfer.files[0]));
 
   function showFeedback(node, message, isError = false) {
     if (!node) return;
@@ -111,6 +183,33 @@
     }
   }
 
+  async function createContactOrder({ name, email, phone, serviceId, serviceName, message, sampleImageUrl }) {
+    const orderRef = database.ref("orders").push();
+    const messageRef = database.ref(`chats/${visitor.uid}/messages`).push();
+    const now = Date.now();
+    const order = {
+      orderId: orderRef.key,
+      name,
+      phone,
+      email,
+      service: serviceName,
+      serviceId: serviceId === "other" ? "other" : serviceId,
+      message,
+      status: "Pending",
+      createdAt: now,
+      dateKey: new Date(now).toISOString().slice(0, 10)
+    };
+    if (sampleImageUrl) order.sampleImageUrl = sampleImageUrl;
+    const chatMessage = {
+      sender: "client",
+      text: message,
+      createdAt: now
+    };
+    await orderRef.set(order);
+    await messageRef.set(chatMessage);
+    return orderRef.key;
+  }
+
   async function openChat() {
     if (!dialog.open) dialog.showModal();
     showFeedback(chatNotice, "");
@@ -166,7 +265,7 @@
       return;
     }
     sendButton.disabled = true;
-    sendButton.textContent = "Sending…";
+    sendButton.textContent = selectedSampleImage ? "Uploading sample…" : "Sending…";
     try {
       const profileRef = database.ref(`chats/${visitor.uid}/profile`);
       const profileSnapshot = await profileRef.once("value");
@@ -179,18 +278,32 @@
           createdAt: Date.now()
         });
       }
-      await sendMessage(message);
+      const sampleImageUrl = selectedSampleImage ? await uploadSampleImage(selectedSampleImage) : "";
+      const orderId = await createContactOrder({
+        name,
+        email,
+        phone,
+        serviceId,
+        serviceName,
+        message,
+        sampleImageUrl
+      });
       form.reset();
+      clearSampleImage();
       otherServiceRow.hidden = true;
       otherServiceRow.querySelector("input").required = false;
-      showFeedback(feedback, "Message sent. We’ll reply here, and your chat bell will appear with our reply.");
+      showFeedback(feedback, `Order request ${orderId} sent. We’ll reply here, and your chat bell will appear with our reply.`);
       await openChat();
     } catch (error) {
       console.error("Could not save the contact message.", error);
-      showFeedback(feedback, "Your message could not be sent. Please try again or contact us by WhatsApp.", true);
+      const details = error?.code || error?.message;
+      sampleImageError.textContent = selectedSampleImage ? details || "Sample image upload failed." : "";
+      showFeedback(feedback, details
+        ? `Your request could not be saved (${details}). Please try again or contact us by WhatsApp.`
+        : "Your request could not be saved. Please try again or contact us by WhatsApp.", true);
     } finally {
       sendButton.disabled = false;
-      sendButton.innerHTML = 'Send message <span aria-hidden="true">↗</span>';
+      sendButton.innerHTML = 'Order this service <span aria-hidden="true">↗</span>';
     }
   });
 
