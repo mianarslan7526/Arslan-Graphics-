@@ -15,7 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css?v=20261021-centered-contact-upload">
   <script src="assets/assets.js?v=20261017-no-service-prices"></script>
-  <script src="js/main.js?v=20261017-about-image-diagonal-motion" defer></script>
+  <script src="js/main.js?v=20261103-navigation-menu-fix" defer></script>
 </head>
 <body data-track-visit>
   <div class="intro" id="intro" aria-label="Welcome to Arslan Graphics">
@@ -44,7 +44,7 @@
         <a class="nav-link" href="#services">Services</a>
         <a class="nav-link" href="#about">About Me</a>
         <a class="nav-link" href="#contact">Contact Us</a>
-        <a class="nav-cta" href="#services">Let’s talk <span aria-hidden="true">↗</span></a>
+        <a class="nav-cta" href="#contact-name">Let’s talk <span aria-hidden="true">↗</span></a>
       </div>
     </nav>
   </header>
@@ -116,7 +116,7 @@
         <p class="contact-lead reveal">Tell me what you’re building. I’ll bring the ideas, the detail, and a little bit of magic.</p>
         <form class="contact-message-form reveal" id="contact-message-form" novalidate>
           <div class="contact-message-fields">
-            <label>Your name<input name="name" type="text" autocomplete="name" maxlength="100" required placeholder="Full name"></label>
+            <label>Your name<input id="contact-name" name="name" type="text" autocomplete="name" maxlength="100" required placeholder="Full name"></label>
             <label>Email<input name="email" type="email" autocomplete="email" maxlength="150" placeholder="you@example.com"></label>
             <label>Phone / WhatsApp<input name="phone" type="tel" autocomplete="tel" maxlength="30" placeholder="+92 310 8201521"></label>
             <label>Service

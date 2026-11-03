@@ -763,13 +763,18 @@
     if (!activeVisitorId) return;
     const name = visitorChats[activeVisitorId]?.profile?.name || "this visitor";
     if (!window.confirm(`Delete the conversation with ${name}? This cannot be undone.`)) return;
+    const visitorIdToDelete = activeVisitorId;
     try {
-      await window.firebaseDb.ref(`chats/${activeVisitorId}`).remove();
+      const conversationRef = window.firebaseDb.ref(`chats/${visitorIdToDelete}`);
+      await conversationRef.set(null);
+      delete visitorChats[visitorIdToDelete];
+      renderVisitorMessages();
       document.getElementById("visitor-chat-dialog").close();
+      activeVisitorId = "";
       showToast("Conversation deleted.");
     } catch (error) {
-      console.error(`Could not delete conversation ${activeVisitorId}.`, error);
-      document.getElementById("admin-chat-feedback").textContent = "Conversation could not be deleted. Check the database rules.";
+      console.error(`Could not delete conversation ${visitorIdToDelete}.`, error);
+      document.getElementById("admin-chat-feedback").textContent = `Conversation could not be deleted${error.code ? ` (${error.code})` : ""}. Check the Firebase rules and try again.`;
     }
   });
   document.getElementById("cancel-service-edit").addEventListener("click", () => document.getElementById("service-dialog").close());

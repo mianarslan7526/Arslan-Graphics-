@@ -329,7 +329,7 @@
       menu.classList.toggle("is-open", open);
       document.body.classList.toggle("menu-open", open);
     });
-    links.forEach((link) => link.addEventListener("click", () => {
+    [...document.querySelectorAll(".nav-link, .nav-cta")].forEach((link) => link.addEventListener("click", () => {
       toggle.setAttribute("aria-expanded", "false");
       menu.classList.remove("is-open");
       document.body.classList.remove("menu-open");

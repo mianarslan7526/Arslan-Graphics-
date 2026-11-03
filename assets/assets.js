@@ -8,7 +8,7 @@ window.SITE_CONFIG = {
   heroImageUrl: "https://i.ibb.co/gMpBWb96/IMG-20261016-WA0010.jpg",
   heroImageUrl2: "https://i.ibb.co/TxvwxTjQ/file-0000000040708211aa32b59315e347da.png",
   // Yahan About section ki image ka direct image link paste karein.
-  aboutImageUrl: "https://mp3tourl.com/images/1792128835758-eb085eca-6250-4556-9dab-3cb3d06020fe.png",
+  aboutImageUrl: "https://i.ibb.co/VWrZ4YgK/SAVE-20261027-035152.jpg",
 
   contact: {
     email: "mianarslan7526@gmail.com",
