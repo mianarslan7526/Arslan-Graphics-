@@ -305,12 +305,10 @@
       timerStarted = true;
       window.setTimeout(skip, 5000);
     };
+    startTimer();
     if (logo && !logo.hidden && !logo.complete) {
       logo.addEventListener("load", startTimer, { once: true });
       logo.addEventListener("error", startTimer, { once: true });
-      window.setTimeout(startTimer, 2000);
-    } else {
-      startTimer();
     }
   }
 

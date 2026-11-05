@@ -37,8 +37,9 @@ img { display: block; max-width: 100%; }
 .reveal { opacity: 0; transform: translateY(22px); transition: opacity .72s ease, transform .72s cubic-bezier(.2,.75,.25,1); }
 .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-.intro { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; overflow: hidden; background: var(--bg); transition: opacity .7s ease, visibility .7s ease; }
+.intro { position: fixed; z-index: 1000; inset: 0; display: grid; place-items: center; overflow: hidden; background: var(--bg); transition: opacity .7s ease, visibility .7s ease; animation: intro-safety-hide 12s both; }
 .intro.is-leaving { opacity: 0; visibility: hidden; pointer-events: none; }
+@keyframes intro-safety-hide { 0%, 96% { opacity: 1; visibility: visible; pointer-events: auto; } 100% { opacity: 0; visibility: hidden; pointer-events: none; } }
 .intro-content { width: min(480px, 90vw); text-align: center; }
 .intro-mark, .brand-mark { display: grid; place-items: center; color: var(--bg); background: var(--gold-gradient); font: 800 21px/1 var(--display); letter-spacing: -.14em; }
 .intro-mark { position: relative; display: grid; width: min(420px, 86vw); aspect-ratio: 550 / 454; height: auto; place-items: center; margin: 0 auto 16px; overflow: visible; border-radius: 0; color: var(--bg); background: transparent; font-size: 25px; animation: mark-in .65s cubic-bezier(.2,.8,.2,1) both; }
