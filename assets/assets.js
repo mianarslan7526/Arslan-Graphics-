@@ -30,7 +30,7 @@ window.SITE_CONFIG = {
     { name: "Behance", url: "", icon: "behance", iconUrl: "" }
   ],
 
-  
+  firebase: {
     apiKey: "AIzaSyCmgYtEZVMAQhJPX_xOMNJ7IYXgiNeoyxc",
     authDomain: "arslan-graphic.firebaseapp.com",
     databaseURL: "https://arslan-graphic-default-rtdb.firebaseio.com",
