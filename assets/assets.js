@@ -30,8 +30,7 @@ window.SITE_CONFIG = {
     { name: "Behance", url: "", icon: "behance", iconUrl: "" }
   ],
 
-  // Configured Firebase web app values; apne project ko badlein to yahan update karein.
-  firebase: {
+  
     apiKey: "AIzaSyCmgYtEZVMAQhJPX_xOMNJ7IYXgiNeoyxc",
     authDomain: "arslan-graphic.firebaseapp.com",
     databaseURL: "https://arslan-graphic-default-rtdb.firebaseio.com",
